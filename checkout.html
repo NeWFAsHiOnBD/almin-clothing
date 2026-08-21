@@ -1,44 +1,60 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>চেকআউট - Fashion Store</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body style="background: #f4f5f7;">
+document.addEventListener('DOMContentLoaded', () => {
+    // ১. চেক করা কাস্টমার লগইন করা আছে কিনা, থাকলে নাম ও ফোন অটো ফিল হয়ে যাবে
+    const loggedUser = JSON.parse(localStorage.getItem('loggedCustomer'));
+    if (!loggedUser) {
+        alert('আগে লগইন করতে হবে!');
+        window.location.href = 'index.html';
+        return;
+    }
 
-    <nav class="navbar">
-        <div class="logo"><a href="index.html">Fashion<span>Store</span></a></div>
-    </nav>
+    const nameInput = document.getElementById('c-name');
+    const phoneInput = document.getElementById('c-phone');
 
-    <div class="container" style="max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <h2>অর্ডার কনফার্ম করুন</h2>
-        <form id="checkout-form" style="margin-top: 20px;">
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px; font-weight:600;">আপনার নাম:</label>
-                <input type="text" id="c-name" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:4px;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px; font-weight:600;">মোবাইল নম্বর:</label>
-                <input type="text" id="c-phone" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:4px;">
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px; font-weight:600;">সম্পূর্ণ ঠিকানা:</label>
-                <textarea id="c-address" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:4px; height:80px;"></textarea>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <label style="display:block; margin-bottom:5px; font-weight:600;">পেমেন্ট মেথড:</label>
-                <select id="c-payment" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:4px;">
-                    <option value="Cash on Delivery">ক্যাশ অন ডেলিভারি (Cash on Delivery)</option>
-                    <option value="bKash/Nagad">বিকাশ / নগদ (Online Payment)</option>
-                </select>
-            </div>
-            <button type="submit" class="btn-checkout">অর্ডার প্লেস করুন</button>
-        </form>
-    </div>
+    if (nameInput) nameInput.value = loggedUser.name || '';
+    if (phoneInput) phoneInput.value = loggedUser.phone || '';
+});
 
-    <script src="checkout.js"></script>
-</body>
-    </html>
-    
+// ২. অর্ডার সাবমিট হ্যান্ডলার
+const checkoutForm = document.getElementById('checkout-form');
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const loggedUser = JSON.parse(localStorage.getItem('loggedCustomer')) || {};
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+        if (cartItems.length === 0) {
+            alert('আপনার কার্ট খালি!');
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // মোট দাম হিসাব করা
+        let totalAmount = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+
+        // নতুন অর্ডার অবজেক্ট তৈরি
+        const newOrder = {
+            orderId: 'ORD-' + Math.floor(100000 + Math.random() * 900000),
+            customerName: document.getElementById('c-name').value,
+            phone: document.getElementById('c-phone').value,
+            customerEmail: loggedUser.email || 'N/A',
+            address: document.getElementById('c-address').value,
+            paymentMethod: document.getElementById('c-payment').value,
+            items: cartItems,
+            totalAmount: totalAmount,
+            status: 'Processing',
+            date: new Date().toLocaleDateString('bn-BD')
+        };
+
+        // লোকাল স্টোরেজে অর্ডার সেভ করা (অ্যাডমিন এবং কাস্টমার উভয়ের জন্য)
+        let existingOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+        existingOrders.unshift(newOrder);
+        localStorage.setItem('myOrders', JSON.stringify(existingOrders));
+
+        // কার্ট খালি করে দেওয়া
+        localStorage.removeItem('cart');
+
+        alert('🎉 আপনার অর্ডারটি সফলভাবে প্লেস হয়েছে! ধন্যবাদ।');
+        window.location.href = 'my-orders.html';
+    });
+}
