@@ -16,13 +16,18 @@
 
     <!-- ন্যাভবার -->
     <nav class="navbar">
-        <div class="logo">
-            <a href="index.html">Fashion<span>Store</span></a>
+        <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
+            <button id="menu-toggle" class="nav-icon" style="font-size: 22px; cursor: pointer;"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo">
+                <a href="index.html">Fashion<span>Store</span></a>
+            </div>
         </div>
+
         <div class="search-box">
-            <input type="text" id="search-input" placeholder="আপনার পছন্দের পোশাক খুঁজুন..." onkeyup="searchProducts()">
+            <input type="text" id="search-input" placeholder="পণ্য খুঁজুন..." onkeyup="searchProducts()">
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
+
         <div class="nav-actions">
             <button id="cart-icon" class="nav-icon">
                 <i class="fa-solid fa-bag-shopping"></i>
@@ -33,8 +38,28 @@
         </div>
     </nav>
 
-    <!-- ক্যাটাগরি মেনু -->
-    <div class="category-menu">
+    <!-- মোবাইল সাইড ড্রয়ার মেনু (ট্রি-বার মেনু) -->
+    <div class="mobile-drawer" id="mobile-drawer">
+        <div class="drawer-header">
+            <h3>ক্যাটাগরি মেনু</h3>
+            <button id="close-drawer">&times;</button>
+        </div>
+        <div class="drawer-body">
+            <ul>
+                <li><a href="#" onclick="filterCategory('all'); closeMobileMenu();"><i class="fa-solid fa-border-all"></i> সকল পোশাক</a></li>
+                <li><a href="#" onclick="filterCategory('men'); closeMobileMenu();"><i class="fa-solid fa-shirt"></i> পুরুষদের কালেকশন</a></li>
+                <li><a href="#" onclick="filterCategory('women'); closeMobileMenu();"><i class="fa-solid fa-person-dress"></i> নারীদের কালেকশন</a></li>
+                <li><a href="#" onclick="filterCategory('kids'); closeMobileMenu();"><i class="fa-solid fa-child"></i> বাচ্চাদের কালেকশন</a></li>
+                <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+                <li><a href="track-order.html"><i class="fa-solid fa-truck-fast"></i> অর্ডার ট্র্যাক করুন</a></li>
+                <li><a href="admin.html"><i class="fa-solid fa-lock"></i> অ্যাডমিন প্যানেল</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+
+    <!-- ডেস্কটপ ক্যাটাগরি মেনু -->
+    <div class="category-menu desktop-cat">
         <ul>
             <li><a href="#" class="highlight" onclick="filterCategory('all')">সকল পোশাক</a></li>
             <li><a href="#" onclick="filterCategory('men')">পুরুষদের কালেকশন</a></li>
@@ -43,7 +68,7 @@
         </ul>
     </div>
 
-    <!-- হিরো সেকশন / ব্যানার -->
+    <!-- হিরো সেকশন -->
     <section class="hero-slider">
         <div class="hero-content">
             <h2>স্টাইলিশ ও প্রিমিয়াম পোশাকের সমাহার</h2>
@@ -65,54 +90,50 @@
             <i class="fa-solid fa-shield-halved"></i>
             <div>
                 <h4>১০০% অরিজিনাল</h4>
-                <p>প্রিমিয়াম কোয়ালিটি ফেব্রিক</p>
+                <p>প্রিমিয়াম কোয়ালিটি</p>
             </div>
         </div>
         <div class="badge-item">
             <i class="fa-solid fa-rotate-left"></i>
             <div>
                 <h4>সহজ রিটার্ন</h4>
-                <p>৭ দিনের মধ্যে রিটার্ন পলিসি</p>
+                <p>৭ দিনের রিটার্ন পলিসি</p>
             </div>
         </div>
     </section>
 
-    <!-- মেইন প্রোডাক্ট সেকশন -->
+    <!-- প্রডাক্ট সেকশন -->
     <div class="container" id="shop-section">
         <div class="section-title">
             <h2>আমাদের প্রডাক্টসমূহ</h2>
-            <p>সেরা মানের পোশাক বেছে নিন সাশ্রয়ী মূল্যে</p>
         </div>
-
         <div class="product-grid" id="product-list">
-            <!-- ডায়নামিক প্রোডাক্ট এখানে লোড হবে -->
+            <!-- ডায়নামিক প্রোডাক্ট লোড হবে -->
         </div>
     </div>
 
-    <!-- স্লাইড-আউট কার্ট ড্রয়ার -->
+    <!-- শপিং কার্ট ড্রয়ার -->
     <div class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3>আপনার শপিং কার্ট</h3>
             <button id="close-cart">&times;</button>
         </div>
-        <div class="cart-body" id="cart-items">
-            <!-- কার্ট আইটেমগুলো এখানে দেখাবে -->
-        </div>
+        <div class="cart-body" id="cart-items"></div>
         <div class="cart-footer">
             <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
                 <span>সর্বমোট:</span>
                 <span id="total-price">৳ 0</span>
             </div>
-            <button class="btn-checkout">চেকআউট করুন</button>
+            <button class="btn-checkout" onclick="window.location.href='checkout.html'">চেকআউট করুন</button>
         </div>
     </div>
 
-    <!-- ফুটার সেকশন -->
+    <!-- ফুটার -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-col">
                 <h3>Fashion Store</h3>
-                <p>বাংলাদেশের অন্যতম বিশ্বস্ত অনলাইন পোশাকের শপ। প্রিমিয়াম কোয়ালিটি আমাদের অঙ্গীকার।</p>
+                <p>বাংলাদেশের অন্যতম বিশ্বস্ত অনলাইন পোশাকের শপ।</p>
             </div>
             <div class="footer-col">
                 <h4>দ্রুত লিংক</h4>
@@ -133,12 +154,30 @@
         </div>
     </footer>
 
-    <!-- অতিরিক্ত স্ক্রিপ্ট ফিল্টারিং ও সার্চের জন্য -->
     <script src="script.js"></script>
     <script>
-        // ক্যাটাগরি ফিল্টার এবং সার্চ ফাংশন
+        // মোবাইল ড্রয়ার মেনু কন্ট্রোল
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileDrawer = document.getElementById('mobile-drawer');
+        const closeDrawer = document.getElementById('close-drawer');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+
+        if(menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                mobileDrawer.classList.add('open');
+                drawerOverlay.classList.add('active');
+            });
+        }
+        function closeMobileMenu() {
+            if(mobileDrawer) mobileDrawer.classList.remove('open');
+            if(drawerOverlay) drawerOverlay.classList.remove('active');
+        }
+        if(closeDrawer) closeDrawer.addEventListener('click', closeMobileMenu);
+        if(drawerOverlay) drawerOverlay.addEventListener('click', closeMobileMenu);
+
+        // ফিল্টার এবং সার্চ ফাংশন
         function filterCategory(cat) {
-            const allProducts = JSON.parse(localStorage.getItem('admin_products')) || products;
+            const allProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
             if (cat === 'all') {
                 displayProducts(allProducts);
             } else {
@@ -149,20 +188,16 @@
 
         function searchProducts() {
             const query = document.getElementById('search-input').value.toLowerCase();
-            const allProducts = JSON.parse(localStorage.getItem('admin_products')) || products;
+            const allProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
             const matched = allProducts.filter(p => p.title.toLowerCase().includes(query));
             displayProducts(matched);
         }
 
-        // পেজ লোড হলে অ্যাডমিন প্রোডাক্ট ও ডিফল্ট প্রোডাক্ট সিঙ্ক করার জন্য
         window.addEventListener('DOMContentLoaded', () => {
-            const savedProducts = JSON.parse(localStorage.getItem('admin_products'));
-            if (savedProducts && savedProducts.length > 0) {
-                displayProducts(savedProducts);
-            } else {
-                displayProducts(products);
-            }
+            const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
+            displayProducts(savedProducts);
         });
     </script>
 </body>
-</html>
+            </html>
+    
