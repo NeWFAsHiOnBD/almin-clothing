@@ -1,104 +1,110 @@
-let products = JSON.parse(localStorage.getItem('myProducts')) || [
-    { id: 1, title: "প্রিমিয়াম কটন ক্যাজুয়াল শার্ট", category: "men", size: "L", price: 1250, oldPrice: 1500, image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500" }
-];
+let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-let cart = JSON.parse(localStorage.getItem('myCart')) || [];
-
-function displayProducts(items) {
+// হোমপেজে প্রোডাক্ট রেন্ডারিং ফাংশন
+function displayProducts(productsToDisplay) {
     const productList = document.getElementById('product-list');
     if (!productList) return;
+
     productList.innerHTML = '';
 
-    items.forEach(product => {
-        const productCard = `
-            <div class="product-card" style="background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                <img src="${product.image}" alt="${product.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
-                <h4 style="margin: 10px 0 5px; font-size: 16px;">${product.title}</h4>
-                <p style="font-size: 13px; color: #666;">সাইজ: ${product.size}</p>
-                <div style="margin: 8px 0; font-weight: bold; color: #e63946;">
-                    ৳ ${product.price} <span style="text-decoration: line-through; color: #888; font-size: 12px;">৳ ${product.oldPrice}</span>
-                </div>
-                <button onclick="addToCart(${product.id})" style="width: 100%; padding: 8px; background: #1d3557; color: #fff; border: none; border-radius: 4px; cursor: pointer;">
-                    <i class="fa-solid fa-cart-plus"></i> কার্টে যোগ করুন
-                </button>
-            </div>
-        `;
-        productList.innerHTML += productCard;
-    });
-}
-
-function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    cart.push(product);
-    localStorage.setItem('myCart', JSON.stringify(cart));
-    updateCartUI();
-    alert('প্রোডাক্টটি কার্টে যোগ করা হয়েছে!');
-}
-
-function updateCartUI() {
-    const cartCount = document.getElementById('cart-count');
-    if(cartCount) cartCount.innerText = cart.length;
-    
-    const cartItemsContainer = document.getElementById('cart-items');
-    if (!cartItemsContainer) return;
-    
-    if (cart.length === 0) {
-        cartItemsContainer.innerHTML = '<p class="empty-cart-msg">আপনার কার্ট বর্তমানে খালি।</p>';
-        document.getElementById('total-price').innerText = '৳ 0';
+    if (productsToDisplay.length === 0) {
+        productList.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#777;">বর্তমানে কোনো প্রোডাক্ট নেই। অ্যাডমিন প্যানেল থেকে প্রোডাক্ট যোগ করুন।</p>';
         return;
     }
 
-    cartItemsContainer.innerHTML = '';
-    let total = 0;
-
-    cart.forEach((item, index) => {
-        total += item.price;
-        cartItemsContainer.innerHTML += `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
-                <div>
-                    <h5 style="font-size: 14px;">${item.title}</h5>
-                    <small>৳ ${item.price}</small>
+    productsToDisplay.forEach(product => {
+        const card = `
+            <div class="product-card">
+                <img src="${product.image}" alt="${product.title}" class="product-img">
+                <div class="product-info">
+                    <h3 class="product-title">${product.title}</h3>
+                    <div class="product-price">
+                        <span class="current-price">৳ ${product.price}</span>
+                        ${product.oldPrice ? `<span class="old-price">৳ ${product.oldPrice}</span>` : ''}
+                    </div>
+                    <button class="btn-add-cart" onclick="addToCart(${product.id})">কার্ডে যোগ করুন</button>
                 </div>
-                <button onclick="removeFromCart(${index})" style="background: none; border: none; color: red; cursor: pointer;">&times;</button>
             </div>
         `;
+        productList.innerHTML += card;
     });
+}
 
-    document.getElementById('total-price').innerText = `৳ ${total}`;
+// কার্টে প্রোডাক্ট যোগ করা
+function addToCart(productId) {
+    const allProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
+    const product = allProducts.find(p => p.id === productId);
+
+    if (product) {
+        const existingItem = cart.find(item => item.id === productId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+        updateCart();
+        document.getElementById('cart-drawer').classList.add('open');
+    }
+}
+
+// কার্ট আপডেট ও কাউন্ট বাড়ানো
+function updateCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    const cartCount = document.getElementById('cart-count');
+    const cartItems = document.getElementById('cart-items');
+    const totalPriceElem = document.getElementById('total-price');
+
+    if (cartCount) {
+        const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCount.innerText = totalCount;
+    }
+
+    if (cartItems) {
+        cartItems.innerHTML = '';
+        let totalAmount = 0;
+
+        cart.forEach((item, index) => {
+            totalAmount += item.price * item.quantity;
+            cartItems.innerHTML += `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="cart-item-details">
+                        <h4>${item.title}</h4>
+                        <p>৳ ${item.price} x ${item.quantity}</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})" style="background:none; border:none; color:red; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+        });
+
+        if (totalPriceElem) {
+            totalPriceElem.innerText = `৳ ${totalAmount}`;
+        }
+    }
 }
 
 function removeFromCart(index) {
     cart.splice(index, 1);
-    localStorage.setItem('myCart', JSON.stringify(cart));
-    updateCartUI();
+    updateCart();
 }
 
-const cartIcon = document.getElementById('cart-icon');
-const cartDrawer = document.getElementById('cart-drawer');
-const closeCart = document.getElementById('close-cart');
-
-if(cartIcon && cartDrawer) {
-    cartIcon.addEventListener('click', (e) => {
-        e.preventDefault();
-        cartDrawer.classList.add('active');
-    });
-    closeCart.addEventListener('click', () => {
-        cartDrawer.classList.remove('active');
-    });
-}
-
-const checkoutBtn = document.querySelector('.btn-checkout');
-if(checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
-        if (cart.length === 0) {
-            alert('আপনার কার্ট খালি!');
-            return;
-        }
-        window.location.href = 'checkout.html';
-    });
-}
-
+// কার্ট ড্রয়ার টগল করা
 document.addEventListener('DOMContentLoaded', () => {
-    displayProducts(products);
-    updateCartUI();
+    updateCart();
+    
+    const cartIcon = document.getElementById('cart-icon');
+    const closeCart = document.getElementById('close-cart');
+    const cartDrawer = document.getElementById('cart-drawer');
+
+    if (cartIcon) {
+        cartIcon.addEventListener('click', () => cartDrawer.classList.add('open'));
+    }
+    if (closeCart) {
+        closeCart.addEventListener('click', () => cartDrawer.classList.remove('open'));
+    }
+
+    // অটো লোড প্রোডাক্টস
+    const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
+    displayProducts(savedProducts);
 });
+            
