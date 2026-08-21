@@ -6,6 +6,19 @@
     <title>Fashion Store - প্রিমিয়াম অনলাইন শপ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* কাস্টমার লগইন ও পপআপ স্টাইল */
+        .auth-btn { background: #e63946; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; text-decoration: none; }
+        .auth-btn:hover { background: #d62828; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.active { display: flex; }
+        .auth-modal { background: #fff; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative; }
+        .auth-modal h3 { margin-bottom: 15px; color: #1d3557; text-align: center; }
+        .auth-modal input { width: 100%; padding: 10px; margin-bottom: 12px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        .auth-modal button.submit-btn { width: 100%; background: #1d3557; color: #fff; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .auth-modal button.submit-btn:hover { background: #457b9d; }
+        .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; background: none; border: none; color: #333; }
+    </style>
 </head>
 <body>
 
@@ -28,17 +41,22 @@
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
 
-        <div class="nav-actions">
-            <button id="cart-icon" class="nav-icon">
+        <div class="nav-actions" style="display: flex; align-items: center; gap: 10px;">
+            <button id="cart-icon" class="nav-icon" style="position: relative; background: none; border: none; cursor: pointer; font-size: 20px;">
                 <i class="fa-solid fa-bag-shopping"></i>
-                <span class="badge" id="cart-count">0</span>
+                <span class="badge" id="cart-count" style="position: absolute; top: -5px; right: -8px; background: red; color: white; font-size: 10px; padding: 2px 5px; border-radius: 50%;">0</span>
             </button>
-            <a href="track-order.html" class="nav-icon" title="অর্ডার ট্র্যাক করুন"><i class="fa-solid fa-truck-fast"></i></a>
-            <a href="admin.html" class="btn-login"><i class="fa-solid fa-lock"></i> অ্যাডমিন</a>
+            
+            <!-- কাস্টমার অ্যাকাউন্ট / লগইন সেকশন -->
+            <div id="user-account-section">
+                <button onclick="openAuthModal()" class="auth-btn"><i class="fa-solid fa-user"></i> লগইন</button>
+            </div>
+
+            <a href="admin.html" class="btn-login" style="background: #1d3557; color: white; padding: 6px 10px; border-radius: 4px; text-decoration: none; font-size: 13px;"><i class="fa-solid fa-lock"></i> অ্যাডমিন</a>
         </div>
     </nav>
 
-    <!-- মোবাইল সাইড ড্রয়ার মেনু (ট্রি-বার মেনু) -->
+    <!-- মোবাইল সাইড ড্রয়ার মেনু -->
     <div class="mobile-drawer" id="mobile-drawer">
         <div class="drawer-header">
             <h3>ক্যাটাগরি মেনু</h3>
@@ -51,6 +69,7 @@
                 <li><a href="#" onclick="filterCategory('women'); closeMobileMenu();"><i class="fa-solid fa-person-dress"></i> নারীদের কালেকশন</a></li>
                 <li><a href="#" onclick="filterCategory('kids'); closeMobileMenu();"><i class="fa-solid fa-child"></i> বাচ্চাদের কালেকশন</a></li>
                 <hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+                <li><a href="my-orders.html"><i class="fa-solid fa-box-archive"></i> আমার অর্ডার</a></li>
                 <li><a href="track-order.html"><i class="fa-solid fa-truck-fast"></i> অর্ডার ট্র্যাক করুন</a></li>
                 <li><a href="admin.html"><i class="fa-solid fa-lock"></i> অ্যাডমিন প্যানেল</a></li>
             </ul>
@@ -65,7 +84,30 @@
             <li><a href="#" onclick="filterCategory('men')">পুরুষদের কালেকশন</a></li>
             <li><a href="#" onclick="filterCategory('women')">নারীদের কালেকশন</a></li>
             <li><a href="#" onclick="filterCategory('kids')">বাচ্চাদের কালেকশন</a></li>
+            <li><a href="my-orders.html" style="color: #e63946; font-weight: bold;"><i class="fa-solid fa-box-archive"></i> আমার অর্ডার</a></li>
         </ul>
+    </div>
+
+    <!-- কাস্টমার লগইন ও ভেরিফিকেশন মডাল (পপআপ) -->
+    <div class="modal-overlay" id="auth-modal-overlay">
+        <div class="auth-modal">
+            <button class="close-modal" onclick="closeAuthModal()">&times;</button>
+            <div id="step-1">
+                <h3>কাস্টমার লগইন / সাইনআপ</h3>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">অর্ডার করতে জিমেইল ও ফোন নাম্বার দিয়ে ভেরিফাই করুন।</p>
+                <input type="text" id="cust-name" placeholder="আপনার নাম" required>
+                <input type="email" id="cust-email" placeholder="জিমেইল (example@gmail.com)" required>
+                <input type="tel" id="cust-phone" placeholder="ফোন নাম্বার (017XXXXXXXX)" required>
+                <button class="submit-btn" onclick="sendOtpCode()">ওটিপি (OTP) পাঠান</button>
+            </div>
+
+            <div id="step-2" style="display: none;">
+                <h3>ওটিপি ভেরিফিকেশন</h3>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">আপনার জিমেইল/ফোনে পাঠানো ৪ ডিজিটের কোডটি দিন (ডেমো কোড: <b style="color:red;">1234</b>)</p>
+                <input type="text" id="otp-input" placeholder="কোড দিন (1234)" maxlength="4" required>
+                <button class="submit-btn" onclick="verifyOtpCode()">ভেরিফাই ও লগইন করুন</button>
+            </div>
+        </div>
     </div>
 
     <!-- হিরো সেকশন -->
@@ -124,7 +166,7 @@
                 <span>সর্বমোট:</span>
                 <span id="total-price">৳ 0</span>
             </div>
-            <button class="btn-checkout" onclick="window.location.href='checkout.html'">চেকআউট করুন</button>
+            <button class="btn-checkout" onclick="checkLoginBeforeCheckout()">চেকআউট করুন</button>
         </div>
     </div>
 
@@ -139,6 +181,7 @@
                 <h4>দ্রুত লিংক</h4>
                 <ul>
                     <li><a href="index.html">হোম</a></li>
+                    <li><a href="my-orders.html">আমার অর্ডার</a></li>
                     <li><a href="track-order.html">অর্ডার ট্র্যাকিং</a></li>
                     <li><a href="admin.html">অ্যাডমিন প্যানেল</a></li>
                 </ul>
@@ -175,6 +218,73 @@
         if(closeDrawer) closeDrawer.addEventListener('click', closeMobileMenu);
         if(drawerOverlay) drawerOverlay.addEventListener('click', closeMobileMenu);
 
+        // কাস্টমার অথেন্টিকেশন ও ওটিপি লজিক
+        let tempUserData = {};
+
+        function openAuthModal() {
+            document.getElementById('auth-modal-overlay').classList.add('active');
+        }
+        function closeAuthModal() {
+            document.getElementById('auth-modal-overlay').classList.remove('active');
+        }
+
+        function sendOtpCode() {
+            const name = document.getElementById('cust-name').value.trim();
+            const email = document.getElementById('cust-email').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+
+            if(!name || !email || !phone) {
+                alert('দয়া করে নাম, জিমেইল এবং ফোন নম্বর সঠিকভাবে পূরণ করুন!');
+                return;
+            }
+
+            tempUserData = { name, email, phone };
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+            alert('আপনার জিমেইল ও ফোনে একটি ওটিপি পাঠানো হয়েছে। (ডেমো কোড: 1234)');
+        }
+
+        function verifyOtpCode() {
+            const otp = document.getElementById('otp-input').value.trim();
+            if(otp === '1234') {
+                localStorage.setItem('loggedCustomer', JSON.stringify(tempUserData));
+                alert('🎉 সফলভাবে ভেরিফিকেশন ও লগইন সম্পন্ন হয়েছে!');
+                closeAuthModal();
+                checkUserLoginStatus();
+            } else {
+                alert('ভুল ওটিপি কোড! সঠিক কোড দিন (1234)।');
+            }
+        }
+
+        function checkUserLoginStatus() {
+            const user = JSON.parse(localStorage.getItem('loggedCustomer'));
+            const accountSection = document.getElementById('user-account-section');
+            if(user) {
+                accountSection.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 13px; font-weight: bold; color: #1d3557;"><i class="fa-solid fa-user-check" style="color:green;"></i> ${user.name}</span>
+                        <button onclick="logoutCustomer()" style="background:#e63946; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer; font-size:11px;">লগআউট</button>
+                    </div>
+                `;
+            }
+        }
+
+        function logoutCustomer() {
+            localStorage.removeItem('loggedCustomer');
+            alert('লগআউট করা হয়েছে।');
+            location.reload();
+        }
+
+        function checkLoginBeforeCheckout() {
+            const user = JSON.parse(localStorage.getItem('loggedCustomer'));
+            if(!user) {
+                alert('অনুগ্রহ করে অর্ডার করার আগে আপনার জিমেইল ও ফোন নম্বর দিয়ে লগইন করুন!');
+                openAuthModal();
+            } else {
+                window.location.href = 'checkout.html';
+            }
+        }
+
         // ফিল্টার এবং সার্চ ফাংশন
         function filterCategory(cat) {
             const allProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
@@ -196,8 +306,9 @@
         window.addEventListener('DOMContentLoaded', () => {
             const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
             displayProducts(savedProducts);
+            checkUserLoginStatus();
         });
     </script>
 </body>
-            </html>
+    </html>
     
