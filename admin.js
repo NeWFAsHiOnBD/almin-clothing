@@ -31,7 +31,7 @@ let adminProducts = JSON.parse(localStorage.getItem('admin_products')) || [
     }
 ];
 
-let adminOrders = JSON.parse(localStorage.getItem('myOrders')) ||[span_2](start_span)[span_2](end_span);
+let adminOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
 
 function renderAdminProducts() {
     const tableBody = document.getElementById('admin-product-table');
@@ -41,13 +41,13 @@ function renderAdminProducts() {
     adminProducts.forEach((product, index) => {
         const row = `
             <tr>
-                <td><img src="${product.image}" alt="${product.title}" class="img-thumb"></td>
+                <td><img src="${product.image}" alt="${product.title}" class="img-thumb" style="width:40px; height:40px; object-fit:cover; border-radius:4px;"></td>
                 <td><strong>${product.title}</strong></td>
                 <td>${product.category === 'men' ? 'পুরুষ' : product.category === 'women' ? 'নারী' : 'বাচ্চা'}</td>
                 <td>${product.size}</td>
                 <td>৳ ${product.price}</td>
                 <td>
-                    <button class="btn-delete" onclick="deleteProduct(${index})">
+                    <button class="btn-delete" onclick="deleteProduct(${index})" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">
                         <i class="fa-solid fa-trash"></i> ডিলিট
                     </button>
                 </td>
@@ -59,24 +59,27 @@ function renderAdminProducts() {
     localStorage.setItem('admin_products', JSON.stringify(adminProducts));
 }
 
-document.getElementById('add-product-form').addEventListener('submit', function(e) {
-    e.preventDefault();
+const productForm = document.getElementById('add-product-form');
+if(productForm) {
+    productForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    const newProduct = {
-        id: Date.now(),
-        title: document.getElementById('p-title').value,
-        category: document.getElementById('p-category').value,
-        size: document.getElementById('p-size').value,
-        price: Number(document.getElementById('p-price').value),
-        oldPrice: Number(document.getElementById('p-old-price').value) || Number(document.getElementById('p-price').value),
-        image: document.getElementById('p-image').value
-    };
+        const newProduct = {
+            id: Date.now(),
+            title: document.getElementById('p-title').value,
+            category: document.getElementById('p-category').value,
+            size: document.getElementById('p-size').value,
+            price: Number(document.getElementById('p-price').value),
+            oldPrice: Number(document.getElementById('p-old-price').value) || Number(document.getElementById('p-price').value),
+            image: document.getElementById('p-image').value
+        };
 
-    adminProducts.unshift(newProduct);
-    renderAdminProducts();
-    this.reset();
-    alert('🎉 নতুন প্রোডাক্ট সফলভাবে যোগ হয়েছে!');
-});
+        adminProducts.unshift(newProduct);
+        renderAdminProducts();
+        this.reset();
+        alert('🎉 নতুন প্রোডাক্ট সফলভাবে যোগ হয়েছে!');
+    });
+}
 
 function deleteProduct(index) {
     if (confirm('আপনি কি নিশ্চিত যে এই প্রোডাক্টটি মুছে ফেলতে চান?')) {
@@ -92,7 +95,7 @@ function renderAdminOrders() {
     orderTableBody.innerHTML = '';
 
     if (adminOrders.length === 0) {
-        orderTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">এখনো কোনো নতুন অর্ডার আসেনি।</td></tr>';
+        orderTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888; padding:15px;">এখনো কোনো নতুন অর্ডার আসেনি।</td></tr>';
         return;
     }
 
@@ -115,7 +118,7 @@ function renderAdminOrders() {
                     </select>
                 </td>
                 <td>
-                    <button class="btn-delete" onclick="deleteOrder(${index})">
+                    <button class="btn-delete" onclick="deleteOrder(${index})" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -143,4 +146,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdminProducts();
     renderAdminOrders();
 });
-                          
+            
