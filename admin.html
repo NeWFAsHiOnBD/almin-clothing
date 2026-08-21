@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>অ্যাডমিন কন্ট্রোল প্যানেল | Fashion Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: #f4f6f9; display: flex; flex-direction: column; }
+        @media(min-width: 768px) { body { flex-direction: row; } }
+        
+        .sidebar { width: 100%; background: #1d3557; color: #fff; padding: 15px 20px; }
+        @media(min-width: 768px) { .sidebar { width: 250px; min-height: 100vh; padding: 20px; } }
+        
+        .sidebar h2 { font-size: 20px; margin-bottom: 20px; text-align: center; border-bottom: 1px solid #457b9d; padding-bottom: 10px; }
+        .sidebar ul { list-style: none; display: flex; justify-content: space-around; }
+        @media(min-width: 768px) { .sidebar ul { flex-direction: column; justify-content: flex-start; } .sidebar li { margin-bottom: 15px; } }
+        
+        .sidebar a { color: #fff; text-decoration: none; font-size: 15px; display: block; padding: 8px 10px; border-radius: 5px; }
+        .sidebar a:hover, .sidebar a.active { background: #e63946; }
+        
+        .main-content { flex: 1; padding: 15px; }
+        @media(min-width: 768px) { .main-content { padding: 30px; } }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        @media(min-width: 768px) { .card { padding: 20px; margin-bottom: 30px; } }
+        
+        .card h3 { margin-bottom: 15px; color: #1d3557; font-size: 18px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { margin-bottom: 5px; font-weight: bold; font-size: 14px; }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; outline: none; width: 100%; }
+        
+        .btn-add { margin-top: 15px; background: #1d3557; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+        @media(min-width: 768px) { .btn-add { width: auto; } }
+        .btn-add:hover { background: #457b9d; }
+        
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; min-width: 600px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; font-size: 14px; }
+        th { background: #f8f9fa; color: #1d3557; }
+        
+        .btn-delete { background: #e63946; color: #fff; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        .btn-delete:hover { background: #d62828; }
+        .img-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>ADMIN PANEL</h2>
+        <ul>
+            <li><a href="#" class="active"><i class="fa-solid fa-gauge"></i> ড্যাশবোর্ড</a></li>
+            <!-- সরাসরি স্বাভাবিক লিংক ব্যবহার করা হয়েছে -->
+            <li><a href="index.html"><i class="fa-solid fa-globe"></i> ওয়েবসাইট দেখুন</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2>অ্যাডমিন প্যানেল</h2>
+            <span>স্বাগতম, অ্যাডমিন!</span>
+        </div>
+
+        <!-- Add New Product Form -->
+        <div class="card">
+            <h3>নতুন প্রোডাক্ট যুক্ত করুন</h3>
+            <form id="add-product-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>পোশাকের নাম</label>
+                        <input type="text" id="p-title" required placeholder="যেমন: সুতি শার্ট">
+                    </div>
+                    <div class="form-group">
+                        <label>ক্যাটাগরি</label>
+                        <select id="p-category">
+                            <option value="men">পুরুষ</option>
+                            <option value="women">নারী</option>
+                            <option value="kids">বাচ্চা</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>সাইজ</label>
+                        <input type="text" id="p-size" required placeholder="M, L, XL, XXL">
+                    </div>
+                    <div class="form-group">
+                        <label>মূল্য (৳)</label>
+                        <input type="number" id="p-price" required placeholder="1200">
+                    </div>
+                    <div class="form-group">
+                        <label>ছাড়ের আগের দাম (৳)</label>
+                        <input type="number" id="p-old-price" placeholder="1500">
+                    </div>
+                    <div class="form-group">
+                        <label>ছবির ইউআরএল (Image URL)</label>
+                        <input type="text" id="p-image" required placeholder="https://example.com/image.jpg">
+                    </div>
+                </div>
+                <button type="submit" class="btn-add"><i class="fa-solid fa-plus"></i> প্রোডাক্ট লাইভ করুন</button>
+            </form>
+        </div>
+
+        <!-- Product Table -->
+        <div class="card">
+            <h3>বর্তমান প্রোডাক্ট তালিকা</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ছবি</th>
+                            <th>নাম</th>
+                            <th>ক্যাটাগরি</th>
+                            <th>সাইজ</th>
+                            <th>দাম</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-product-table"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Order List Table -->
+        <div class="card">
+            <h3>কাস্টমারদের অর্ডার তালিকা</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>অর্ডার আইডি</th>
+                            <th>কাস্টমার ও ফোন</th>
+                            <th>ঠিকানা</th>
+                            <th>আইটেম</th>
+                            <th>মোট টাকা</th>
+                            <th>পেমেন্ট</th>
+                            <th>স্টেটাস</th>
+                            <th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-order-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

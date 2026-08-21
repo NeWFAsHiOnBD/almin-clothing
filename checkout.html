@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>চেকআউট ও পেমেন্ট | Fashion Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+        body { background: #f4f6f9; color: #212529; padding: 20px 5%; }
+        .checkout-container { display: grid; grid-template-columns: 1fr 400px; gap: 30px; margin-top: 20px; }
+        @media (max-width: 768px) { .checkout-container { grid-template-columns: 1fr; } }
+        .card { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h3 { color: #1d3557; margin-bottom: 20px; border-bottom: 2px solid #f4f6f9; padding-bottom: 10px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; outline: none; }
+        .payment-options { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .payment-option { border: 1px solid #ddd; padding: 12px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .order-summary-item { display: flex; justify-content: space-between; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .total-row { font-size: 18px; font-weight: bold; color: #e63946; margin-top: 15px; border-top: 2px solid #ddd; padding-top: 10px; }
+        .btn-place-order { width: 100%; background: #e63946; color: #fff; border: none; padding: 14px; font-size: 16px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2 style="color: #1d3557;"><i class="fa-solid fa-lock"></i> নিরাপদ চেকআউট</h2>
+    <div class="checkout-container">
+        <div>
+            <div class="card">
+                <h3>১. কাস্টমার ও শিপিং তথ্য</h3>
+                <form id="checkout-form">
+                    <div class="form-group"><label>আপনার সম্পূর্ণ নাম *</label><input type="text" id="cust-name" required placeholder="নাম লিখুন"></div>
+                    <div class="form-group"><label>মোবাইল নম্বর *</label><input type="tel" id="cust-phone" required placeholder="017XXXXXXXX"></div>
+                    <div class="form-group"><label>ডেলিভারি ঠিকানা *</label><textarea id="cust-address" rows="3" required placeholder="পূর্ণাঙ্গ ঠিকানা"></textarea></div>
+                    <div class="form-group"><label>এরিয়া *</label>
+                        <select id="shipping-area" onchange="updateShippingCharge()">
+                            <option value="80">ঢাকার ভেতরে (৳ ৮০)</option>
+                            <option value="150">ঢাকার বাইরে (৳ ১৫০)</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="card">
+                <h3>২. পেমেন্ট মেথড</h3>
+                <div class="payment-options">
+                    <label class="payment-option"><input type="radio" name="payment" value="COD" checked> ক্যাশ অন ডেলিভারি</label>
+                    <label class="payment-option"><input type="radio" name="payment" value="bKash"> বিকাশ / নগদ</label>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="card">
+                <h3>অর্ডার বিবরণী</h3>
+                <div id="checkout-items-list"></div>
+                <div>
+                    <div class="order-summary-item"><span>পণ্যের দাম:</span><span id="subtotal-price">৳ 0</span></div>
+                    <div class="order-summary-item"><span>ডেলিভারি চার্জ:</span><span id="shipping-charge-text">৳ ৮০</span></div>
+                    <div class="order-summary-item total-row"><span>সর্বমোট:</span><span id="grand-total-price">৳ 0</span></div>
+                </div>
+                <button class="btn-place-order" onclick="processOrder()">অর্ডার কনফার্ম করুন</button>
+            </div>
+        </div>
+    </div>
+    <script src="checkout.js"></script>
+</body>
+</html>
