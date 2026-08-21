@@ -1,4 +1,25 @@
-let adminProducts = JSON.parse(localStorage.getItem('myProducts')) || [
+// ১. সিকিউরিটি চেক: অ্যাডমিন লগইন করা না থাকলে লগইন পেজে বা প্রম্পটে রিডাইরেক্ট করা হবে
+function checkAdminAuth() {
+    const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn');
+    if (isLoggedIn !== 'true') {
+        const inputEmail = prompt("অ্যাডমিন ইমেইল দিন:");
+        const inputPass = prompt("পাসওয়ার্ড দিন:");
+
+        if (inputEmail === "alaminas1965@gmail.com" && inputPass === "@Alamin017") {
+            sessionStorage.setItem('isAdminLoggedIn', 'true');
+            alert("লগইন সফল হয়েছে!");
+        } else {
+            alert("ভুল ইমেইল বা পাসওয়ার্ড! আপনাকে হোমপেজে ফিরিয়ে নেওয়া হলো।");
+            window.location.href = "index.html";
+        }
+    }
+}
+
+// পেজ লোড হওয়ার সাথেই সিকিউরিটি চেক রান করবে
+checkAdminAuth();
+
+// ২. মূল অ্যাডমিন ডেটা এবং লজিক (লোকাল স্টোরেজ কি 'admin_products' করা হয়েছে)
+let adminProducts = JSON.parse(localStorage.getItem('admin_products')) || [
     {
         id: 1,
         title: "প্রিমিয়াম কটন ক্যাজুয়াল শার্ট",
@@ -10,7 +31,7 @@ let adminProducts = JSON.parse(localStorage.getItem('myProducts')) || [
     }
 ];
 
-let adminOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+let adminOrders = JSON.parse(localStorage.getItem('myOrders')) ||[span_2](start_span)[span_2](end_span);
 
 function renderAdminProducts() {
     const tableBody = document.getElementById('admin-product-table');
@@ -35,7 +56,7 @@ function renderAdminProducts() {
         tableBody.innerHTML += row;
     });
 
-    localStorage.setItem('myProducts', JSON.stringify(adminProducts));
+    localStorage.setItem('admin_products', JSON.stringify(adminProducts));
 }
 
 document.getElementById('add-product-form').addEventListener('submit', function(e) {
@@ -64,7 +85,7 @@ function deleteProduct(index) {
     }
 }
 
-// ধাপ ৮: অর্ডার লিস্ট রেন্ডার ও আপডেট করার ফাংশন
+// অর্ডার লিস্ট রেন্ডার ও আপডেট করার ফাংশন
 function renderAdminOrders() {
     const orderTableBody = document.getElementById('admin-order-table');
     if (!orderTableBody) return;
@@ -76,13 +97,13 @@ function renderAdminOrders() {
     }
 
     adminOrders.forEach((order, index) => {
-        const itemNames = order.items.map(item => item.title).join(', ');
+        const itemNames = order.items ? order.items.map(item => item.title).join(', ') : 'প্রোডাক্ট';
         const row = `
             <tr>
                 <td><strong>${order.orderId}</strong><br><small>${order.date}</small></td>
                 <td>${order.customerName}<br><small>${order.phone}</small></td>
                 <td><small>${order.address}</small></td>
-                <td>${itemNames} (${order.items.length}টি)</td>
+                <td>${itemNames}</td>
                 <td><strong>৳ ${order.totalAmount}</strong></td>
                 <td><span style="background: #e1f5fe; color: #0288d1; padding: 2px 6px; border-radius: 3px; font-size: 12px;">${order.paymentMethod}</span></td>
                 <td>
@@ -122,3 +143,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdminProducts();
     renderAdminOrders();
 });
+                          
