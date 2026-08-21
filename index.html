@@ -3,71 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fashion Store - অনলাইন শপ</title>
+    <title>Fashion Store - প্রিমিয়াম অনলাইন শপ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
-        body { background: #f9f9f9; color: #333; }
-        header { background: #1d3557; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-        header h1 { font-size: 22px; }
-        .admin-btn { background: #e63946; color: #fff; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-size: 14px; font-weight: bold; }
-        
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        .banner { background: #457b9d; color: #fff; padding: 30px; text-align: center; border-radius: 8px; margin-bottom: 25px; }
-        .banner h2 { margin-bottom: 10px; font-size: 26px; }
-        
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .product-card { background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-        .product-card img { width: 100%; height: 220px; object-fit: cover; }
-        .product-info { padding: 15px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-info h3 { font-size: 16px; margin-bottom: 8px; color: #1d3557; }
-        .price { font-weight: bold; color: #e63946; margin-bottom: 10px; }
-        .price span { text-decoration: line-through; color: #888; font-size: 13px; margin-left: 5px; }
-        .btn-order { margin-top: auto; background: #1d3557; color: #fff; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
-        .btn-order:hover { background: #457b9d; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header>
-        <h1>Fashion Store</h1>
-        <a href="admin.html" class="admin-btn"><i class="fa-solid fa-lock"></i> অ্যাডমিন প্যানেল</a>
-    </header>
+    <!-- অ্যানাউন্সমেন্ট বার -->
+    <div class="announcement-bar">
+        <span>শীতকালীন অফার!</span> যেকোনো পোশাকে ফ্রি ডেলিভারি পেতে কুপন ব্যবহার করুন।
+    </div>
 
-    <div class="container">
-        <div class="banner">
+    <!-- ন্যাভবার -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="index.html">Fashion<span>Store</span></a>
+        </div>
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="আপনার পছন্দের পোশাক খুঁজুন..." onkeyup="searchProducts()">
+            <button><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="nav-actions">
+            <button id="cart-icon" class="nav-icon">
+                <i class="fa-solid fa-bag-shopping"></i>
+                <span class="badge" id="cart-count">0</span>
+            </button>
+            <a href="track-order.html" class="nav-icon" title="অর্ডার ট্র্যাক করুন"><i class="fa-solid fa-truck-fast"></i></a>
+            <a href="admin.html" class="btn-login"><i class="fa-solid fa-lock"></i> অ্যাডমিন</a>
+        </div>
+    </nav>
+
+    <!-- ক্যাটাগরি মেনু -->
+    <div class="category-menu">
+        <ul>
+            <li><a href="#" class="highlight" onclick="filterCategory('all')">সকল পোশাক</a></li>
+            <li><a href="#" onclick="filterCategory('men')">পুরুষদের কালেকশন</a></li>
+            <li><a href="#" onclick="filterCategory('women')">নারীদের কালেকশন</a></li>
+            <li><a href="#" onclick="filterCategory('kids')">বাচ্চাদের কালেকশন</a></li>
+        </ul>
+    </div>
+
+    <!-- হিরো সেকশন / ব্যানার -->
+    <section class="hero-slider">
+        <div class="hero-content">
             <h2>স্টাইলিশ ও প্রিমিয়াম পোশাকের সমাহার</h2>
-            <p>আপনার পছন্দের পোশাকটি বেছে নিন খুব সহজেই!</p>
+            <p>আপনার দৈনন্দিন এবং উৎসবের লুককে করুন আরও আকর্ষণীয়।</p>
+            <a href="#shop-section" class="btn-primary">কেনাকাটা শুরু করুন</a>
+        </div>
+    </section>
+
+    <!-- ট্রাস্ট ব্যাজ -->
+    <section class="trust-badges">
+        <div class="badge-item">
+            <i class="fa-solid fa-truck-fast"></i>
+            <div>
+                <h4>দ্রুত ডেলিভারি</h4>
+                <p>সারাদেশে হোম ডেলিভারি</p>
+            </div>
+        </div>
+        <div class="badge-item">
+            <i class="fa-solid fa-shield-halved"></i>
+            <div>
+                <h4>১০০% অরিজিনাল</h4>
+                <p>প্রিমিয়াম কোয়ালিটি ফেব্রিক</p>
+            </div>
+        </div>
+        <div class="badge-item">
+            <i class="fa-solid fa-rotate-left"></i>
+            <div>
+                <h4>সহজ রিটার্ন</h4>
+                <p>৭ দিনের মধ্যে রিটার্ন পলিসি</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- মেইন প্রোডাক্ট সেকশন -->
+    <div class="container" id="shop-section">
+        <div class="section-title">
+            <h2>আমাদের প্রডাক্টসমূহ</h2>
+            <p>সেরা মানের পোশাক বেছে নিন সাশ্রয়ী মূল্যে</p>
         </div>
 
-        <h2 style="margin-bottom: 15px; color: #1d3557;">সকল প্রোডাক্ট</h2>
-        <div class="product-grid" id="product-list-container">
+        <div class="product-grid" id="product-list">
             <!-- ডায়নামিক প্রোডাক্ট এখানে লোড হবে -->
         </div>
     </div>
 
+    <!-- স্লাইড-আউট কার্ট ড্রয়ার -->
+    <div class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>আপনার শপিং কার্ট</h3>
+            <button id="close-cart">&times;</button>
+        </div>
+        <div class="cart-body" id="cart-items">
+            <!-- কার্ট আইটেমগুলো এখানে দেখাবে -->
+        </div>
+        <div class="cart-footer">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
+                <span>সর্বমোট:</span>
+                <span id="total-price">৳ 0</span>
+            </div>
+            <button class="btn-checkout">চেকআউট করুন</button>
+        </div>
+    </div>
+
+    <!-- ফুটার সেকশন -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Fashion Store</h3>
+                <p>বাংলাদেশের অন্যতম বিশ্বস্ত অনলাইন পোশাকের শপ। প্রিমিয়াম কোয়ালিটি আমাদের অঙ্গীকার।</p>
+            </div>
+            <div class="footer-col">
+                <h4>দ্রুত লিংক</h4>
+                <ul>
+                    <li><a href="index.html">হোম</a></li>
+                    <li><a href="track-order.html">অর্ডার ট্র্যাকিং</a></li>
+                    <li><a href="admin.html">অ্যাডমিন প্যানেল</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>যোগাযোগ</h4>
+                <p><i class="fa-solid fa-phone"></i> 017XXXXXXXX</p>
+                <p><i class="fa-solid fa-envelope"></i> support@fashionstore.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Fashion Store. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- অতিরিক্ত স্ক্রিপ্ট ফিল্টারিং ও সার্চের জন্য -->
+    <script src="script.js"></script>
     <script>
-        // হোমপেজে প্রোডাক্ট দেখানোর বেসিক স্ক্রিপ্ট
-        window.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('product-list-container');
-            const products = JSON.parse(localStorage.getItem('admin_products')) || [];
-
-            if (products.length === 0) {
-                container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">বর্তমানে কোনো প্রোডাক্ট নেই। অ্যাডমিন প্যানেল থেকে প্রোডাক্ট যুক্ত করুন।</p>';
-                return;
+        // ক্যাটাগরি ফিল্টার এবং সার্চ ফাংশন
+        function filterCategory(cat) {
+            const allProducts = JSON.parse(localStorage.getItem('admin_products')) || products;
+            if (cat === 'all') {
+                displayProducts(allProducts);
+            } else {
+                const filtered = allProducts.filter(p => p.category === cat);
+                displayProducts(filtered);
             }
+        }
 
-            container.innerHTML = products.map(p => `
-                <div class="product-card">
-                    <img src="${p.image}" alt="${p.title}">
-                    <div class="product-info">
-                        <h3>${p.title}</h3>
-                        <p style="font-size: 13px; color: #666; margin-bottom: 5px;">সাইজ: ${p.size}</p>
-                        <div class="price">৳${p.price} ${p.oldPrice ? `<span>৳${p.oldPrice}</span>` : ''}</div>
-                        <button class="btn-order" onclick="alert('অর্ডার সিস্টেমের কাজ চলছে!')">অর্ডার করুন</button>
-                    </div>
-                </div>
-            `).join('');
+        function searchProducts() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const allProducts = JSON.parse(localStorage.getItem('admin_products')) || products;
+            const matched = allProducts.filter(p => p.title.toLowerCase().includes(query));
+            displayProducts(matched);
+        }
+
+        // পেজ লোড হলে অ্যাডমিন প্রোডাক্ট ও ডিফল্ট প্রোডাক্ট সিঙ্ক করার জন্য
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedProducts = JSON.parse(localStorage.getItem('admin_products'));
+            if (savedProducts && savedProducts.length > 0) {
+                displayProducts(savedProducts);
+            } else {
+                displayProducts(products);
+            }
         });
     </script>
 </body>
