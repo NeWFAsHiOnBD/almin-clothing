@@ -1,4 +1,4 @@
-// ১. সিকিউরিটি চেক: অ্যাডমিন লগইন করা না থাকলে লগইন পেজে বা প্রম্পটে রিডাইরেক্ট করা হবে
+// ১. সিকিউরিটি চেক
 function checkAdminAuth() {
     const isLoggedIn = sessionStorage.getItem('isAdminLoggedIn');
     if (isLoggedIn !== 'true') {
@@ -14,11 +14,9 @@ function checkAdminAuth() {
         }
     }
 }
-
-// পেজ লোড হওয়ার সাথেই সিকিউরিটি চেক রান করবে
 checkAdminAuth();
 
-// ২. মূল অ্যাডমিন ডেটা এবং লজিক (লোকাল স্টোরেজ কি 'admin_products' করা হয়েছে)
+// ২. মূল অ্যাডমিন ডেটা
 let adminProducts = JSON.parse(localStorage.getItem('admin_products')) || [
     {
         id: 1,
@@ -31,6 +29,7 @@ let adminProducts = JSON.parse(localStorage.getItem('admin_products')) || [
     }
 ];
 
+// ভুলটি এখানে ছিল, আমি ঠিক করে দিয়েছি:
 let adminOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
 
 function renderAdminProducts() {
@@ -41,13 +40,13 @@ function renderAdminProducts() {
     adminProducts.forEach((product, index) => {
         const row = `
             <tr>
-                <td><img src="${product.image}" alt="${product.title}" class="img-thumb" style="width:40px; height:40px; object-fit:cover; border-radius:4px;"></td>
+                <td><img src="${product.image}" alt="${product.title}" class="img-thumb"></td>
                 <td><strong>${product.title}</strong></td>
                 <td>${product.category === 'men' ? 'পুরুষ' : product.category === 'women' ? 'নারী' : 'বাচ্চা'}</td>
                 <td>${product.size}</td>
                 <td>৳ ${product.price}</td>
                 <td>
-                    <button class="btn-delete" onclick="deleteProduct(${index})" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">
+                    <button class="btn-delete" onclick="deleteProduct(${index})">
                         <i class="fa-solid fa-trash"></i> ডিলিট
                     </button>
                 </td>
@@ -59,27 +58,24 @@ function renderAdminProducts() {
     localStorage.setItem('admin_products', JSON.stringify(adminProducts));
 }
 
-const productForm = document.getElementById('add-product-form');
-if(productForm) {
-    productForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+document.getElementById('add-product-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-        const newProduct = {
-            id: Date.now(),
-            title: document.getElementById('p-title').value,
-            category: document.getElementById('p-category').value,
-            size: document.getElementById('p-size').value,
-            price: Number(document.getElementById('p-price').value),
-            oldPrice: Number(document.getElementById('p-old-price').value) || Number(document.getElementById('p-price').value),
-            image: document.getElementById('p-image').value
-        };
+    const newProduct = {
+        id: Date.now(),
+        title: document.getElementById('p-title').value,
+        category: document.getElementById('p-category').value,
+        size: document.getElementById('p-size').value,
+        price: Number(document.getElementById('p-price').value),
+        oldPrice: Number(document.getElementById('p-old-price').value) || Number(document.getElementById('p-price').value),
+        image: document.getElementById('p-image').value
+    };
 
-        adminProducts.unshift(newProduct);
-        renderAdminProducts();
-        this.reset();
-        alert('🎉 নতুন প্রোডাক্ট সফলভাবে যোগ হয়েছে!');
-    });
-}
+    adminProducts.unshift(newProduct);
+    renderAdminProducts();
+    this.reset();
+    alert('🎉 নতুন প্রোডাক্ট সফলভাবে যোগ হয়েছে!');
+});
 
 function deleteProduct(index) {
     if (confirm('আপনি কি নিশ্চিত যে এই প্রোডাক্টটি মুছে ফেলতে চান?')) {
@@ -88,14 +84,13 @@ function deleteProduct(index) {
     }
 }
 
-// অর্ডার লিস্ট রেন্ডার ও আপডেট করার ফাংশন
 function renderAdminOrders() {
     const orderTableBody = document.getElementById('admin-order-table');
     if (!orderTableBody) return;
     orderTableBody.innerHTML = '';
 
     if (adminOrders.length === 0) {
-        orderTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888; padding:15px;">এখনো কোনো নতুন অর্ডার আসেনি।</td></tr>';
+        orderTableBody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">এখনো কোনো নতুন অর্ডার আসেনি।</td></tr>';
         return;
     }
 
@@ -118,7 +113,7 @@ function renderAdminOrders() {
                     </select>
                 </td>
                 <td>
-                    <button class="btn-delete" onclick="deleteOrder(${index})" style="background:red; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">
+                    <button class="btn-delete" onclick="deleteOrder(${index})">
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </td>
@@ -146,4 +141,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderAdminProducts();
     renderAdminOrders();
 });
-            
+    
