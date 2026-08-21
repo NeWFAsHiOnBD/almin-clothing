@@ -379,6 +379,94 @@ body {
     cursor: pointer;
 }
 
+/* মোবাইল ড্রয়ার মেনু (ট্রি-বার) স্টাইল */
+.mobile-drawer {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background: white;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    z-index: 3000;
+    transition: left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-drawer.open {
+    left: 0;
+}
+
+.drawer-header {
+    background: #f85606;
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.drawer-header h3 {
+    font-size: 18px;
+}
+
+.drawer-header button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 26px;
+    cursor: pointer;
+}
+
+.drawer-body {
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.drawer-body ul {
+    list-style: none;
+}
+
+.drawer-body ul li {
+    margin-bottom: 15px;
+}
+
+.drawer-body ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.drawer-body ul li a:hover {
+    color: #f85606;
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2500;
+    display: none;
+}
+
+.drawer-overlay.active {
+    display: block;
+}
+
+@media(min-width: 768px) {
+    #menu-toggle {
+        display: none;
+    }
+}
+
 /* ফুটার */
 .footer {
     background: #1a1a1a;
@@ -420,4 +508,4 @@ body {
     padding-top: 12px;
     font-size: 12px;
     }
-    
+        
