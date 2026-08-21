@@ -1,62 +1,36 @@
-let cartItems = JSON.parse(localStorage.getItem('myCart')) || [];
-let ordersList = JSON.parse(localStorage.getItem('myOrders')) || [];
-let subtotal = 0;
-let shippingCharge = 80;
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-function loadCheckoutSummary() {
-    const summaryContainer = document.getElementById('checkout-items-list');
-    if (!summaryContainer) return;
-    
-    if (cartItems.length === 0) {
-        summaryContainer.innerHTML = '<p style="color: red;">কার্ট খালি!</p>';
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cart.length === 0) {
+        alert('আপনার কার্ট খালি!');
+        window.location.href = 'index.html';
         return;
     }
 
-    summaryContainer.innerHTML = '';
-    subtotal = 0;
-    cartItems.forEach(item => {
-        subtotal += item.price;
-        summaryContainer.innerHTML += `<div class="order-summary-item"><span>${item.title}</span><span>৳ ${item.price}</span></div>`;
-    });
+    const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
 
-    document.getElementById('subtotal-price').innerText = `৳ ${subtotal}`;
-    calculateGrandTotal();
-}
-
-function updateShippingCharge() {
-    shippingCharge = Number(document.getElementById('shipping-area').value);
-    document.getElementById('shipping-charge-text').innerText = `৳ ${shippingCharge}`;
-    calculateGrandTotal();
-}
-
-function calculateGrandTotal() {
-    document.getElementById('grand-total-price').innerText = `৳ ${subtotal + shippingCharge}`;
-}
-
-function processOrder() {
-    const name = document.getElementById('cust-name').value;
-    const phone = document.getElementById('cust-phone').value;
-    const address = document.getElementById('cust-address').value;
-    const paymentMethod = document.querySelector('input[name="payment"]:checked').value;
-
-    if (!name || !phone || !address) {
-        alert('সব তথ্য পূরণ করুন!');
-        return;
-    }
-
-    const trackingId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
     const newOrder = {
-        orderId: trackingId, customerName: name, phone: phone, address: address,
-        items: cartItems, totalAmount: subtotal + shippingCharge, paymentMethod: paymentMethod,
-        status: 'Processing', date: new Date().toLocaleDateString('bn-BD')
+        orderId: orderId,
+        customerName: document.getElementById('c-name').value,
+        phone: document.getElementById('c-phone').value,
+        address: document.getElementById('c-address').value,
+        paymentMethod: document.getElementById('c-payment').value,
+        items: cart,
+        totalAmount: totalAmount,
+        status: 'Processing',
+        date: new Date().toLocaleDateString()
     };
 
-    ordersList.unshift(newOrder);
-    localStorage.setItem('myOrders', JSON.stringify(ordersList));
-    localStorage.removeItem('myCart');
+    let myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
+    myOrders.unshift(newOrder);
+    localStorage.setItem('myOrders', JSON.stringify(myOrders));
 
-    alert(`অর্ডার সফল হয়েছে! ট্র্যাকিং আইডি: ${trackingId}`);
-    window.location.href = 'index.html';
-}
+    // কার্ট খালি করে দেওয়া
+    localStorage.removeItem('cart');
 
-document.addEventListener('DOMContentLoaded', loadCheckoutSummary);
+    alert(`🎉 আপনার অর্ডারটি সফলভাবে গৃহিত হয়েছে!\nআপনার অর্ডার আইডি: ${orderId}`);
+    window.location.href = `track-order.html?id=${orderId}`;
+});
+                                       
