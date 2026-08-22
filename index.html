@@ -18,6 +18,31 @@
         .auth-modal button.submit-btn { width: 100%; background: #1d3557; color: #fff; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .auth-modal button.submit-btn:hover { background: #457b9d; }
         .close-modal { position: absolute; top: 10px; right: 15px; font-size: 20px; cursor: pointer; background: none; border: none; color: #333; }
+
+        /* এক লাইনে প্রিমিয়াম থ্রিডি লোগো স্টাইল */
+        .logo a {
+            font-size: 17px;
+            font-weight: 800;
+            text-decoration: none;
+            background: linear-gradient(135deg, #ff7b00, #ff0055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo a:hover {
+            transform: scale(1.03);
+        }
+
+        .logo span {
+            color: #1d3557;
+            -webkit-text-fill-color: #1d3557;
+        }
     </style>
 </head>
 <body>
@@ -29,8 +54,8 @@
 
     <!-- ন্যাভবার -->
     <nav class="navbar">
-        <div class="nav-left" style="display: flex; align-items: center; gap: 12px;">
-            <button id="menu-toggle" class="nav-icon" style="font-size: 22px; cursor: pointer;"><i class="fa-solid fa-bars"></i></button>
+        <div class="nav-left" style="display: flex; align-items: center; gap: 8px;">
+            <button id="menu-toggle" class="nav-icon" style="font-size: 20px; cursor: pointer; background: none; border: none;"><i class="fa-solid fa-bars"></i></button>
             <div class="logo">
                 <a href="index.html">Almin-<span>Fashion Store</span></a>
             </div>
@@ -41,7 +66,7 @@
             <button><i class="fa-solid fa-magnifying-glass"></i></button>
         </div>
 
-        <div class="nav-actions" style="display: flex; align-items: center; gap: 10px;">
+        <div class="nav-actions" style="display: flex; align-items: center; gap: 8px;">
             <button id="cart-icon" class="nav-icon" style="position: relative; background: none; border: none; cursor: pointer; font-size: 20px;">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="badge" id="cart-count" style="position: absolute; top: -5px; right: -8px; background: red; color: white; font-size: 10px; padding: 2px 5px; border-radius: 50%;">0</span>
@@ -310,5 +335,5 @@
         });
     </script>
 </body>
-    </html>
+                        </html>
     
