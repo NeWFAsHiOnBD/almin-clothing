@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমার অর্ডারসমূহ - Almin-Fashion Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .order-container { max-width: 800px; margin: 30px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .order-card { border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 15px; background: #fafafa; }
+        .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px; font-size: 14px; font-weight: bold; color: #1d3557; }
+        .order-body p { margin: 5px 0; font-size: 14px; color: #444; }
+        .badge-pending { background: #ffb703; color: #000; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+        .badge-success { background: #2a9d8f; color: #fff; padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+        .back-home { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #1d3557; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container" style="padding-top: 30px;">
+        <a href="index.html" class="back-home"><i class="fa-solid fa-arrow-left"></i> হোমে ফিরে যান</a>
+        
+        <div class="order-container">
+            <h2>আমার অর্ডারসমূহ</h2>
+            <p style="color: #666; font-size: 13px; margin-bottom: 20px;">আপনার করা অর্ডারগুলোর বর্তমান অবস্থা নিচে দেখতে পাবেন।</p>
+            
+            <div id="my-orders-list">
+                <!-- ডায়নামিক অর্ডার লিস্ট এখানে লোড হবে -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('loggedCustomer'));
+            const ordersListEl = document.getElementById('my-orders-list');
+
+            if (!user) {
+                ordersListEl.innerHTML = `<p style="text-align: center; color: red;">দয়া করে প্রথমে আপনার অ্যাকাউন্ট বা জিমেইল দিয়ে লগইন করুন!</p>`;
+                return;
+            }
+
+            // লোকালস্টোরেজ থেকে অর্ডারগুলো ফেচ করা
+            const allOrders = JSON.parse(localStorage.getItem('customer_orders')) || [];
+            
+            // বর্তমান ইউজারের ফোন বা ইমেইলের সাথে মিল রেখে অর্ডার ফিল্টার করা
+            const userOrders = allOrders.filter(ord => ord.phone === user.phone || ord.email === user.email);
+
+            if (userOrders.length === 0) {
+                ordersListEl.innerHTML = `<p style="text-align: center; color: #666;">আপনি এখনো কোনো অর্ডার করেননি।</p>`;
+                return;
+            }
+
+            let html = '';
+            userOrders.forEach((ord, index) => {
+                html += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span>অর্ডার আইডি: #${index + 1} (${ord.date || 'তারিখ নেই'})</span>
+                            <span class="badge-success">প্রসেসিং এ আছে</span>
+                        </div>
+                        <div class="order-body">
+                            <p><b>নাম:</b> ${ord.name}</p>
+                            <p><b>ফোন:</b> ${ord.phone}</p>
+                            <p><b>ঠিকানা:</b> ${ord.address}</p>
+                            <p><b>পেমেন্ট পদ্ধতি:</b> ${ord.paymentMethod || 'Cash on Delivery'}</p>
+                            <p><b>সর্বমোট মূল্য:</b> ৳ ${ord.total}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            ordersListEl.innerHTML = html;
+        });
+    </script>
+</body>
+</html>
