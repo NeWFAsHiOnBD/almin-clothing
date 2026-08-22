@@ -3,58 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>অর্ডার ট্র্যাক করুন - Fashion Store</title>
-    <link rel="stylesheet" href="style.css">
+    <title>অর্ডার ট্র্যাকিং | Fashion Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif; }
+        body { background: #f4f6f9; color: #212529; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        
+        .track-card { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); width: 100%; max-width: 500px; text-align: center; }
+        .track-card h2 { color: #1d3557; margin-bottom: 10px; }
+        .track-card p { color: #666; font-size: 14px; margin-bottom: 25px; }
+        
+        .search-form { display: flex; gap: 10px; margin-bottom: 25px; }
+        .search-form input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 5px; outline: none; font-size: 15px; }
+        .search-form button { background: #e63946; color: #fff; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        
+        .status-result { display: none; text-align: left; background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #1d3557; }
+        .status-result.active { display: block; }
+        .status-item { margin-bottom: 10px; font-size: 15px; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 13px; color: #fff; }
+        .bg-processing { background: #ffb703; color: #000; }
+        .bg-shipped { background: #0288d1; }
+        .bg-delivered { background: #38b000; }
+        .bg-cancelled { background: #d62828; }
+        
+        .btn-home { display: inline-block; margin-top: 20px; text-decoration: none; color: #1d3557; font-weight: bold; font-size: 14px; }
+    </style>
 </head>
-<body style="background: #f4f5f7;">
+<body>
 
-    <nav class="navbar">
-        <div class="logo"><a href="index.html">Fashion<span>Store</span></a></div>
-    </nav>
+    <div class="track-card">
+        <h2><i class="fa-solid fa-location-dot"></i> আপনার অর্ডার ট্র্যাক করুন</h2>
+        <p>আপনার অর্ডারের দেওয়া ট্র্যাকিং আইডিটি নিচে ইনপুট দিন</p>
 
-    <div class="container" style="max-width: 600px; margin: 30px auto; background: white; padding: 30px; border-radius: 8px;">
-        <h2>অর্ডার ট্র্যাকিং</h2>
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
-            <input type="text" id="track-id-input" placeholder="আপনার অর্ডার আইডি লিখুন (যেমন: ORD-XXXXXX)" style="flex-grow:1; padding:10px; border:1px solid #ddd; border-radius:4px;">
-            <button onclick="trackOrder()" class="btn-checkout" style="width: auto; padding: 10px 20px;">ট্র্যাক করুন</button>
+        <div class="search-form">
+            <input type="text" id="track-id-input" placeholder="যেমন: ORD-123456">
+            <button onclick="trackOrder()"><i class="fa-solid fa-magnifying-glass"></i> খুঁজুন</button>
         </div>
 
-        <div id="track-result" style="margin-top: 20px;"></div>
+        <div class="status-result" id="status-box">
+            <div class="status-item"><strong>অর্ডার আইডি:</strong> <span id="res-id"></span></div>
+            <div class="status-item"><strong>কাস্টমারের নাম:</strong> <span id="res-name"></span></div>
+            <div class="status-item"><strong>অর্ডারের তারিখ:</strong> <span id="res-date"></span></div>
+            <div class="status-item"><strong>মোট হিসাব:</strong> <span id="res-total"></span></div>
+            <div class="status-item">
+                <strong>বর্তমান স্ট্যাটাস:</strong> 
+                <span id="res-status" class="status-badge"></span>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-home"><i class="fa-solid fa-arrow-left"></i> হোমপেজে ফিরে যান</a>
     </div>
 
     <script>
         function trackOrder() {
-            const queryId = document.getElementById('track-id-input').value.trim();
-            const myOrders = JSON.parse(localStorage.getItem('myOrders')) || [];
-            const resultDiv = document.getElementById('track-result');
+            const inputId = document.getElementById('track-id-input').value.trim();
+            const statusBox = document.getElementById('status-box');
 
-            const order = myOrders.find(o => o.orderId === queryId);
-
-            if (!order) {
-                resultDiv.innerHTML = '<p style="color:red;">দুঃখিত, এই আইডি দিয়ে কোনো অর্ডার পাওয়া যায়নি।</p>';
+            if (!inputId) {
+                alert('অনুগ্রহ করে ট্র্যাকিং আইডিটি লিখুন!');
                 return;
             }
 
-            resultDiv.innerHTML = `
-                <div style="background:#f9f9f9; padding:15px; border-radius:6px; border:1px solid #eee;">
-                    <p><strong>অর্ডার আইডি:</strong> ${order.orderId}</p>
-                    <p><strong>নাম:</strong> ${order.customerName}</p>
-                    <p><strong>মোবাইল:</strong> ${order.phone}</p>
-                    <p><strong>ঠিকানা:</strong> ${order.address}</p>
-                    <p><strong>মোট মূল্য:</strong> ৳ ${order.totalAmount}</p>
-                    <p><strong>বর্তমান অবস্থা:</strong> <span style="color:#f85606; font-weight:bold;">${order.status}</span></p>
-                </div>
-            `;
-        }
+            const orders = JSON.parse(localStorage.getItem('myOrders')) || [];
+            const foundOrder = orders.find(o => o.orderId.toLowerCase() === inputId.toLowerCase());
 
-        // অটো ফিল ইউআরএল আইডি
-        window.onload = function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            if (id) {
-                document.getElementById('track-id-input').value = id;
-                trackOrder();
+            if (!foundOrder) {
+                alert('এই ট্র্যাকিং আইডির কোনো অর্ডার পাওয়া যায়নি। সঠিক আইডি দিন।');
+                statusBox.classList.remove('active');
+                return;
             }
+
+            document.getElementById('res-id').innerText = foundOrder.orderId;
+            document.getElementById('res-name').innerText = foundOrder.customerName;
+            document.getElementById('res-date').innerText = foundOrder.date;
+            document.getElementById('res-total').innerText = `৳ ${foundOrder.totalAmount}`;
+
+            const badge = document.getElementById('res-status');
+            badge.innerText = foundOrder.status;
+            badge.className = 'status-badge ';
+
+            if (foundOrder.status === 'Processing') badge.classList.add('bg-processing');
+            else if (foundOrder.status === 'Shipped') badge.classList.add('bg-shipped');
+            else if (foundOrder.status === 'Delivered') badge.classList.add('bg-delivered');
+            else badge.classList.add('bg-cancelled');
+
+            statusBox.classList.add('active');
         }
     </script>
 </body>
