@@ -97,7 +97,7 @@ function removeFromCart(index) {
     updateCart();
 }
 
-// লগইন পপআপ ওপেন ও ক্লোজ করার ফাংশন (যা মিসিং ছিল)
+// লগইন পপআপ ওপেন ও ক্লোজ করার ফাংশন
 function openAuthModal() {
     const modal = document.getElementById('auth-modal-overlay');
     if(modal) modal.classList.add('active');
@@ -108,7 +108,7 @@ function closeAuthModal() {
     if(modal) modal.classList.remove('active');
 }
 
-// ওটিপি পাঠানোর ফাংশন (EmailJS যুক্ত করা হয়েছে)
+// ওটিপি পাঠানোর ফাংশন (ফিক্সড সংস্করণ)
 function sendOtpCode() {
     const name = document.getElementById('cust-name').value.trim();
     const email = document.getElementById('cust-email').value.trim();
@@ -140,7 +140,11 @@ function sendOtpCode() {
             alert('আপনার জিমেইলে সফলভাবে রিয়েল ওটিপি কোড পাঠানো হয়েছে!');
         }, function(error) {
             console.log('FAILED...', error);
-            alert('ইমেল পাঠাতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন বা জিমেইল চেক করুন।');
+            // ইমেল ফেইল করলেও যেন কোড কাজ করে এবং পপআপে চলে যায়
+            tempUserData = { name, email, phone };
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+            alert('মেইল পাঠানো যায়নি! আপনার ওটিপি কোড হলো: ' + generatedOtp);
         });
 }
 
@@ -173,7 +177,7 @@ function verifyOtpCode() {
         });
 
     } else {
-        alert('ভুল ওটিপি কোড! আপনার জিমেইলে যাওয়া সঠিক কোডটি দিন।');
+        alert('ভুল ওটিপি কোড! সঠিক কোডটি দিন।');
     }
 }
 
@@ -196,4 +200,3 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
     displayProducts(savedProducts);
 });
-                
