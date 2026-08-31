@@ -5,6 +5,10 @@
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
+// গ্লোবাল ভ্যারিয়েবলগুলো এখানে ডিফাইন করা হলো যাতে কোনো এরর না করে
+let tempUserData = {};
+let generatedOtp = '';
+
 // হোমপেজে প্রোডাক্ট রেন্ডারিং ফাংশন
 function displayProducts(productsToDisplay) {
     const productList = document.getElementById('product-list');
@@ -92,9 +96,6 @@ function removeFromCart(index) {
     cart.splice(index, 1);
     updateCart();
 }
-
-// গ্লোবাল ভ্যারিয়েবল ওটিপি স্টোর করার জন্য
-let generatedOtp = '';
 
 // ওটিপি পাঠানোর ফাংশন (EmailJS যুক্ত করা হয়েছে)
 function sendOtpCode() {
@@ -185,4 +186,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
     displayProducts(savedProducts);
 });
-            
+                                       
