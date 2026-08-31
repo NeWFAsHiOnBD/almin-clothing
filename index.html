@@ -272,10 +272,31 @@
         function verifyOtpCode() {
             const otp = document.getElementById('otp-input').value.trim();
             if(otp === '1234') {
-                localStorage.setItem('loggedCustomer', JSON.stringify(tempUserData));
-                alert('🎉 সফলভাবে ভেরিফিকেশন ও লগইন সম্পন্ন হয়েছে!');
-                closeAuthModal();
-                checkUserLoginStatus();
+                const registerData = {
+                    username: tempUserData.name,
+                    password: tempUserData.phone
+                };
+
+                fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(registerData)
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    localStorage.setItem('loggedCustomer', JSON.stringify(tempUserData));
+                    alert('🎉 সফলভাবে ভেরিফিকেশন ও সার্ভারে রেজিস্ট্রেশন সম্পন্ন হয়েছে!');
+                    closeAuthModal();
+                    checkUserLoginStatus();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('সার্ভারে সংযোগ স্থাপন করা যায়নি! টার্মিনালে সার্ভার चालू আছে কি না চেক করুন।');
+                });
+
             } else {
                 alert('ভুল ওটিপি কোড! সঠিক কোড দিন (1234)।');
             }
@@ -309,6 +330,7 @@
                 window.location.href = 'checkout.html';
             }
         }
+        
 
         // ফিল্টার এবং সার্চ ফাংশন
         function filterCategory(cat) {
