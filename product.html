@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রোডাক্ট বিবরণ - ALMIN-Fashion Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Product Detail Page Specific Styles */
+        .product-detail-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .main-img-box img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .small-img-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .small-img-col {
+            flex-basis: 25%;
+            cursor: pointer;
+        }
+
+        .small-img-col img {
+            width: 100%;
+            border-radius: 6px;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+
+        .small-img-col img:hover {
+            opacity: 1;
+        }
+
+        .product-details-content h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .product-price {
+            font-size: 24px;
+            color: #d9534f;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .product-details-content select, 
+        .product-details-content input {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn-add-cart {
+            background-color: #e63946;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-add-cart:hover {
+            background-color: #d62828;
+        }
+
+        .product-description {
+            margin-top: 25px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .product-detail-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- নেভিগেশন বার (Navbar) -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <button id="menu-toggle" class="nav-icon"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo">
+                <a href="index.html">Almin-<span>Fashion</span></a>
+            </div>
+        </div>
+        <div class="nav-actions">
+            <a href="index.html" class="nav-icon"><i class="fa-solid fa-house"></i></a>
+            <a href="my-orders.html" class="nav-icon"><i class="fa-solid fa-bag-shopping"></i></a>
+        </div>
+    </nav>
+
+    <!-- প্রোডাক্ট বিবরণ সেকশন -->
+    <section class="product-detail-container">
+        
+        <!-- প্রোডাক্ট ছবি (Gallery) -->
+        <div class="product-gallery">
+            <div class="main-img-box">
+                <img src="https://via.placeholder.com/500x600" id="mainImg" alt="Product Image">
+            </div>
+            <div class="small-img-group">
+                <div class="small-img-col">
+                    <img src="https://via.placeholder.com/500x600" class="small-img" onclick="changeImage(this.src)" alt="">
+                </div>
+                <div class="small-img-col">
+                    <img src="https://via.placeholder.com/500x600/333" class="small-img" onclick="changeImage(this.src)" alt="">
+                </div>
+                <div class="small-img-col">
+                    <img src="https://via.placeholder.com/500x600/777" class="small-img" onclick="changeImage(this.src)" alt="">
+                </div>
+            </div>
+        </div>
+
+        <!-- প্রোডাক্ট বিস্তারিত তথ্য -->
+        <div class="product-details-content">
+            <h2 id="productTitle">প প্রিমিয়াম শার্ট/পোশাক</h2>
+            <div class="product-price" id="productPrice">৳ ১২৫০</div>
+            
+            <label for="sizeSelect">সাইজ নির্বাচন করুন:</label><br>
+            <select id="sizeSelect">
+                <option value="M">Medium (M)</option>
+                <option value="L">Large (L)</option>
+                <option value="XL">Extra Large (XL)</option>
+            </select>
+            <br>
+
+            <label for="quantity">পরিমাণ:</label><br>
+            <input type="number" id="quantity" value="1" min="1" style="width: 70px;">
+            <br>
+
+            <button class="btn-add-cart" onclick="addToCart()">কার্টে যোগ করুন</button>
+
+            <div class="product-description">
+                <h3>পণ্য সম্পর্কিত তথ্য:</h3>
+                <p id="productDesc">
+                    এটি একটি প্রিমিয়াম কোয়ালিটির পোশাক। এটি ১০০% সুতি কাপড় দিয়ে তৈরি, যা পরতে অত্যন্ত আরামদায়ক। আকর্ষণীয় ডিজাইন ও দীর্ঘস্থায়ী রঙের গ্যারান্টি দেওয়া হচ্ছে।
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ফুটার সেকশন -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3>Almin-Fashion Store</h3>
+                <p>বাংলাদেশের অন্যতম বিশ্বস্ত অনলাইন পোশাকের শপ।</p>
+            </div>
+            <div class="footer-col">
+                <h4>যোগাযোগ</h4>
+                <p><i class="fa-solid fa-phone"></i> 01790489290</p>
+                <p><i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/8801790489290" style="color: white;">হোয়াটসঅ্যাপে মেসেজ দিন</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Almin-Fashion Store. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- স্ক্রিপ্ট লিঙ্ক -->
+    <script src="script.js"></script>
+    <script>
+        // ছোট ছবিতে ক্লিক করলে মূল ছবি পরিবর্তন হওয়ার ফাংশন
+        function changeImage(src) {
+            document.getElementById('mainImg').src = src;
+        }
+
+        // কার্টে যোগ করার সিম্পল ফাংশন
+        function addToCart() {
+            alert("পণ্যটি কার্টে যোগ করা হয়েছে!");
+        }
+    </script>
+</body>
+</html>
