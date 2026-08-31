@@ -1,3 +1,8 @@
+// EmailJS ইনিশিয়ালাইজেশন (আপনার পাবলিক কি দিয়ে)
+(function() {
+    emailjs.init("DXdkW6ZXuMumReLif");
+})();
+
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 // হোমপেজে প্রোডাক্ট রেন্ডারিং ফাংশন
@@ -88,7 +93,80 @@ function removeFromCart(index) {
     updateCart();
 }
 
-// কার্ট ড্রয়ার টগল করা
+// গ্লোবাল ভ্যারিয়েবল ওটিপি স্টোর করার জন্য
+let generatedOtp = '';
+
+// ওটিপি পাঠানোর ফাংশন (EmailJS যুক্ত করা হয়েছে)
+function sendOtpCode() {
+    const name = document.getElementById('cust-name').value.trim();
+    const email = document.getElementById('cust-email').value.trim();
+    const phone = document.getElementById('cust-phone').value.trim();
+
+    if(!name || !email || !phone) {
+        alert('দয়া করে নাম, জিমেইল এবং ফোন নম্বর সঠিকভাবে পূরণ করুন!');
+        return;
+    }
+
+    // ৪ ডিজিটের র্যান্ডম ওটিপি কোড জেনারেট করা
+    generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // EmailJS টেমপ্লেট প্যারামিটার
+    const templateParams = {
+        to_email: email,
+        to_name: name,
+        pass_code: generatedOtp,
+        message: `আপনার ওটিপি কোড হলো: ${generatedOtp}`
+    };
+
+    // ইমেল পাঠানোর রিকোয়েস্ট
+    emailjs.send('service_h5dvcyh', 'template_fminrzr', templateParams)
+        .then(function(response) {
+            console.log('SUCCESS!', response.status, response.text);
+            tempUserData = { name, email, phone };
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'block';
+            alert('আপনার জিমেইলে সফলভাবে রিয়েল ওটিপি কোড পাঠানো হয়েছে!');
+        }, function(error) {
+            console.log('FAILED...', error);
+            alert('ইমেল পাঠাতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন বা জিমেইল চেক করুন।');
+        });
+}
+
+// ওটিপি ভেরিফাই করার ফাংশন
+function verifyOtpCode() {
+    const otp = document.getElementById('otp-input').value.trim();
+    if(otp === generatedOtp) {
+        const registerData = {
+            username: tempUserData.name,
+            password: tempUserData.phone
+        };
+
+        fetch('http://localhost:3000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(registerData)
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            localStorage.setItem('loggedCustomer', JSON.stringify(tempUserData));
+            alert('🎉 সফলভাবে ভেরিফিকেশন ও সার্ভারে রেজিস্ট্রেশন সম্পন্ন হয়েছে!');
+            closeAuthModal();
+            checkUserLoginStatus();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('সার্ভারে সংযোগ স্থাপন করা যায়নি! টার্মিনালে সার্ভার चालू আছে কি না চেক করুন।');
+        });
+
+    } else {
+        alert('ভুল ওটিপি কোড! আপনার জিমেইলে যাওয়া সঠিক কোডটি দিন।');
+    }
+}
+
+// কার্ট ড্রয়ার টগল করা এবং ইনিশিয়ালাইজেশন
 document.addEventListener('DOMContentLoaded', () => {
     updateCart();
     
