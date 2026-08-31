@@ -5,7 +5,7 @@
 
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-// গ্লোবাল ভ্যারিয়েবলগুলো এখানে ডিফাইন করা হলো যাতে কোনো এরর না করে
+// গ্লোবাল ভ্যারিয়েবল
 let tempUserData = {};
 let generatedOtp = '';
 
@@ -97,6 +97,17 @@ function removeFromCart(index) {
     updateCart();
 }
 
+// লগইন পপআপ ওপেন ও ক্লোজ করার ফাংশন (যা মিসিং ছিল)
+function openAuthModal() {
+    const modal = document.getElementById('auth-modal-overlay');
+    if(modal) modal.classList.add('active');
+}
+
+function closeAuthModal() {
+    const modal = document.getElementById('auth-modal-overlay');
+    if(modal) modal.classList.remove('active');
+}
+
 // ওটিপি পাঠানোর ফাংশন (EmailJS যুক্ত করা হয়েছে)
 function sendOtpCode() {
     const name = document.getElementById('cust-name').value.trim();
@@ -155,11 +166,10 @@ function verifyOtpCode() {
             localStorage.setItem('loggedCustomer', JSON.stringify(tempUserData));
             alert('🎉 সফলভাবে ভেরিফিকেশন ও সার্ভারে রেজিস্ট্রেশন সম্পন্ন হয়েছে!');
             closeAuthModal();
-            checkUserLoginStatus();
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('সার্ভারে সংযোগ স্থাপন করা যায়নি! টার্মিনালে সার্ভার चालू আছে কি না চেক করুন।');
+            alert('সার্ভারে সংযোগ স্থাপন করা যায়নি!');
         });
 
     } else {
@@ -186,4 +196,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
     displayProducts(savedProducts);
 });
-                                       
+                
