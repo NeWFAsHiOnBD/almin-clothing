@@ -6,6 +6,8 @@
     <title>Almin-Fashion Store - প্রিমিয়াম অনলাইন শপ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- EmailJS CDN সংযুক্ত করা হয়েছে -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         /* কাস্টমার লগইন ও পপআপ স্টাইল */
         .auth-btn { background: #e63946; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 5px; text-decoration: none; }
@@ -128,8 +130,8 @@
 
             <div id="step-2" style="display: none;">
                 <h3>ওটিপি ভেরিফিকেশন</h3>
-                <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">আপনার জিমেইল/ফোনে পাঠানো ৪ ডিজিটের কোডটি দিন (ডেমো কোড: <b style="color:red;">1234</b>)</p>
-                <input type="text" id="otp-input" placeholder="কোড দিন (1234)" maxlength="4" required>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px; text-align: center;">আপনার জিমেইলে পাঠানো ৪ ডিজিটের কোডটি দিন।</p>
+                <input type="text" id="otp-input" placeholder="কোড দিন" maxlength="4" required>
                 <button class="submit-btn" onclick="verifyOtpCode()">ভেরিফাই ও লগইন করুন</button>
             </div>
         </div>
@@ -243,8 +245,14 @@
         if(closeDrawer) closeDrawer.addEventListener('click', closeMobileMenu);
         if(drawerOverlay) drawerOverlay.addEventListener('click', closeMobileMenu);
 
+        // EmailJS ইনিশিয়ালাইজেশন
+        (function() {
+            emailjs.init("DXdkW6ZXuMumReLif");
+        })();
+
         // কাস্টমার অথেন্টিকেশন ও ওটিপি লজিক
         let tempUserData = {};
+        let generatedOtp = '';
 
         function openAuthModal() {
             document.getElementById('auth-modal-overlay').classList.add('active');
@@ -263,15 +271,33 @@
                 return;
             }
 
-            tempUserData = { name, email, phone };
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('step-2').style.display = 'block';
-            alert('আপনার জিমেইল ও ফোনে একটি ওটিপি পাঠানো হয়েছে। (ডেমো কোড: 1234)');
+            // ৪ ডিজিটের র্যান্ডম ওটিপি কোড জেনারেট করা
+            generatedOtp = Math.floor(1000 + Math.random() * 9000).toString();
+
+            const templateParams = {
+                to_email: email,
+                to_name: name,
+                pass_code: generatedOtp,
+                message: `আপনার ওটিপি কোড হলো: ${generatedOtp}`
+            };
+
+            // EmailJS এর মাধ্যমে রিয়েল ইমেল পাঠানো
+            emailjs.send('service_h5dvcyh', 'template_fminrzr', templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    tempUserData = { name, email, phone };
+                    document.getElementById('step-1').style.display = 'none';
+                    document.getElementById('step-2').style.display = 'block';
+                    alert('আপনার জিমেইলে সফলভাবে রিয়েল ওটিপি কোড পাঠানো হয়েছে!');
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert('ইমেল পাঠাতে সমস্যা হয়েছে! ইন্টারনেট কানেকশন বা জিমেইল চেক করুন।');
+                });
         }
 
         function verifyOtpCode() {
             const otp = document.getElementById('otp-input').value.trim();
-            if(otp === '1234') {
+            if(otp === generatedOtp) {
                 const registerData = {
                     username: tempUserData.name,
                     password: tempUserData.phone
@@ -298,7 +324,7 @@
                 });
 
             } else {
-                alert('ভুল ওটিপি কোড! সঠিক কোড দিন (1234)।');
+                alert('ভুল ওটিপি কোড! আপনার জিমেইলে যাওয়া সঠিক কোডটি দিন।');
             }
         }
 
@@ -358,4 +384,4 @@
     </script>
 </body>
                         </html>
-    
+            
