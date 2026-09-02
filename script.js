@@ -184,17 +184,35 @@ function verifyOtpCode() {
 // কার্ট ড্রয়ার টগল করা এবং ইনিশিয়ালাইজেশন
 document.addEventListener('DOMContentLoaded', () => {
     updateCart();
-    
+
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const closeDrawer = document.getElementById('close-drawer');
+
+    if (menuToggle && mobileDrawer) {
+        menuToggle.addEventListener('click', () => {
+            mobileDrawer.classList.add('active');
+        });
+    }
+
+    if (closeDrawer && mobileDrawer) {
+        closeDrawer.addEventListener('click', () => {
+            mobileDrawer.classList.remove('active');
+        });
+    }
+
     const cartIcon = document.getElementById('cart-icon');
     const closeCart = document.getElementById('close-cart');
     const cartDrawer = document.getElementById('cart-drawer');
 
-    if (cartIcon) {
+    if (cartIcon && cartDrawer) {
         cartIcon.addEventListener('click', () => cartDrawer.classList.add('open'));
     }
-    if (closeCart) {
+    if (closeCart && cartDrawer) {
         closeCart.addEventListener('click', () => cartDrawer.classList.remove('open'));
     }
+});
+
 
     // অটো লোড প্রোডাক্টস
     const savedProducts = JSON.parse(localStorage.getItem('admin_products')) || [];
